@@ -1,0 +1,25 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#071820"><title>SharkQuest V5.2</title><link rel="stylesheet" href="style.css"></head><body>
+<div id="app">
+<section id="start" class="screen">
+  <div class="start-bg"></div><div class="vignette"></div>
+  <div class="start-content"><div class="logo">SHARK<span>QUEST</span><b>V5.2</b></div><div class="subtitle">Explorer • Observer • Capturer</div>
+  <h1>Choisis ton explorateur</h1>
+  <div class="select-grid">
+    <button class="char-card" data-char="Justine"><img id="justineCardImg" alt="Justine"><div><strong>Justine</strong><small>Exploration • observation</small></div></button>
+    <button class="char-card" data-char="Guillaume"><img id="guillaumeCardImg" alt="Guillaume"><div><strong>Guillaume</strong><small>Survie • sang-froid</small></div></button>
+    <div class="dog-card"><img id="syrachiCardImg" alt="Syrachi"><div><strong>Syrachi</strong><small>Toujours à tes côtés</small></div></div>
+  </div>
+  <button id="playBtn" class="main-btn" disabled>Choisis un personnage</button><button id="resumeBtn" class="secondary hidden">Reprendre la sauvegarde</button>
+  </div>
+</section>
+<section id="game" class="screen hidden">
+  <canvas id="world"></canvas>
+  <div class="hud glass"><img id="hudPortrait"><img id="hudDog"><div class="hud-name"><strong id="hudName"></strong><small>+ Syrachi</small></div><div class="pill">❤️ <b id="hp">100</b></div><div class="pill">🔴 <b id="balls">6</b></div><div class="pill">🦈 <b id="count">0</b></div></div>
+  <div id="quest" class="quest glass">Mission : approche un lagon et capture le Grand requin blanc.</div>
+  <button id="dexBtn" class="icon-btn glass">📘 SharkDex</button>
+  <div id="toast" class="toast"></div>
+  <div class="dpad"><button data-dir="up">▲</button><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div>
+</section>
+<div id="battle" class="overlay hidden"><div id="battleScene" class="battle-scene"><img id="battleImg" alt="Rencontre"><div class="battle-dark"></div><div class="enemy glass"><strong>Grand requin blanc</strong><span id="enemyPct">100%</span><div class="bar"><i id="enemyBar"></i></div></div><div class="battle-player glass"><img id="battlePortrait"><div><strong id="battleName"></strong><small id="battleStats">❤️ 100 • 🔴 6</small></div></div><div id="battleText" class="battle-text glass">Un Grand requin blanc surgit du lagon !</div><div class="battle-actions glass"><button id="observeBtn">👀 Observer</button><button id="captureBtn" class="capture">🔴 Pokéball</button><button id="dogBtn">🐕 Syrachi</button><button id="runBtn">🏃 Reculer</button></div><div id="ballFx" class="ball-fx">●</div></div></div>
+<div id="dex" class="overlay hidden"><div class="modal glass"><button class="close" id="closeDex">✕</button><h2>📘 SharkDex</h2><div class="dex-entry"><div id="sharkArt" class="shark-art"><div class="shark-body"></div></div><div><h3 id="dexName">???</h3><p id="dexInfo">Aucune observation enregistrée.</p></div></div></div></div>
+</div><script src="game.js"></script></body></html>
