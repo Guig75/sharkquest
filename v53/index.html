@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#06171d">
+<title>SharkQuest V5.3</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="loading">Chargement de l'expédition…</div>
+
+<section id="start" class="screen start-bg">
+  <div class="startShade"></div>
+  <div class="startContent">
+    <div class="logoRow"><div class="logo">SHARK<span>QUEST</span></div><div class="version">V5.3</div></div>
+    <div class="tagline">EXPLORE • OBSERVE • CAPTURE • DÉCOUVRE</div>
+    <h1>Choisis ton explorateur</h1>
+    <div class="cards">
+      <button class="char-card" data-char="Justine"><img id="justineCardImg"><div class="cardGrad"></div><div class="cardText"><b>Justine</b><span>Exploration • observation</span></div></button>
+      <button class="char-card" data-char="Guillaume"><img id="guillaumeCardImg"><div class="cardGrad"></div><div class="cardText"><b>Guillaume</b><span>Survie • sang-froid</span></div></button>
+      <div class="dog-card"><img id="syrachiCardImg"><div><b>Syrachi</b><span>Toujours à vos côtés</span></div></div>
+    </div>
+    <div class="startActions"><button id="playBtn" class="bigBtn" disabled>Choisis un personnage</button><button id="resumeBtn" class="ghostBtn hidden">Continuer la sauvegarde</button></div>
+  </div>
+</section>
+
+<section id="game" class="screen hidden">
+  <canvas id="world"></canvas>
+  <div class="hud">
+    <div class="hudLeft glass"><img id="hudPortrait"><img id="hudDog"><div class="hudInfo"><strong id="hudName">Justine</strong><div class="bars"><div class="bar hp"><i id="hpBar"></i></div><span>❤️ <b id="hp">100</b></span></div></div></div>
+    <div class="mission glass"><span class="diamond">◆</span><div><small>OBJECTIF</small><b id="quest">Découvrir 3 espèces de requins.</b></div></div>
+    <div class="hudRight glass"><div>🔴 <b id="balls">6</b></div><div>🦈 <b id="count">0</b>/7</div><button id="dexBtn">SharkDex</button></div>
+  </div>
+  <div id="zoneLabel" class="zoneLabel">CAMP DE BASE</div>
+  <div id="toast" class="toast"></div>
+  <div class="dpad">
+    <button data-dir="up">▲</button><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
+  </div>
+</section>
+
+<section id="battle" class="battle hidden">
+  <canvas id="battleCanvas"></canvas>
+  <div class="battleVignette"></div>
+  <div class="enemyPanel glass"><div><small id="enemyRarity">RARE</small><strong id="enemyName">Grand requin blanc</strong><span id="enemyTemper">Prédateur</span></div><div class="enemyLife"><span id="enemyPct">100%</span><div class="bar enemy"><i id="enemyBar"></i></div></div></div>
+  <div class="battlePlayer glass"><img id="battlePortrait"><div><strong id="battleName"></strong><span id="battleStats">❤️ 100 • 🔴 6</span></div></div>
+  <div id="battleText" class="battleText glass">Un requin apparaît !</div>
+  <div class="battleActions">
+    <button id="observeBtn"><span>👀</span><b>Observer</b><small>Étudier ses mouvements</small></button>
+    <button id="captureBtn" class="capture"><span>🔴</span><b>Pokéball</b><small>Tenter la capture</small></button>
+    <button id="dogBtn"><span>🐕</span><b>Syrachi</b><small>Réduire la riposte</small></button>
+    <button id="runBtn"><span>🏃</span><b>Reculer</b><small>Quitter la rencontre</small></button>
+  </div>
+  <div id="ballFx" class="ballFx">🔴</div>
+  <div id="captureFlash" class="captureFlash"></div>
+</section>
+
+<section id="dex" class="modal hidden">
+  <div class="dexPanel">
+    <div class="dexHead"><div><small>SHARKDEX</small><h2>Espèces de l'île</h2></div><button id="closeDex">✕</button></div>
+    <div id="dexGrid" class="dexGrid"></div>
+    <div id="dexDetail" class="dexDetail"><div class="dexShark" id="dexShark">🦈</div><div><h3 id="dexName">Sélectionne une espèce</h3><p id="dexInfo">Découvre des requins autour de l'île.</p></div></div>
+  </div>
+</section>
+
+<script src="game.js"></script>
+</body>
+</html>
