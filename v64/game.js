@@ -1,0 +1,1 @@
+(()=>{Promise.all(Array.from({length:4},(_,i)=>fetch('game_parts/part'+String(i).padStart(2,'0')+'.txt',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('game part');return r.text()}))).then(parts=>(0,eval)(parts.join(''))).catch(e=>{console.error(e);const l=document.getElementById('loading');if(l)l.textContent='Erreur de chargement — recharge la page.'})})();
