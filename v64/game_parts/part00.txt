@@ -1,0 +1,45 @@
+(()=>{'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const world=$('#world'),ctx=world.getContext('2d'),battleC=$('#battleCanvas'),bctx=battleC.getContext('2d');
+const KEY='sharkquest-v64';
+let soundOn=localStorage.getItem('sharkquest-sound')!=='off', audioCtx=null;
+function ensureAudio(){if(!soundOn)return null;try{audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx}catch(e){return null}}
+function tone(freq=440,dur=.12,type='sine',gain=.055,slide=0){const a=ensureAudio();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(freq,a.currentTime);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,freq+slide),a.currentTime+dur);g.gain.setValueAtTime(gain,a.currentTime);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+dur);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+dur)}
+function sfx(name){if(!soundOn)return;switch(name){case'encounter':tone(180,.18,'triangle',.055,120);setTimeout(()=>tone(290,.18,'triangle',.04,110),110);break;case'boss':tone(72,.55,'sawtooth',.055,-18);setTimeout(()=>tone(54,.72,'triangle',.05,-8),180);break;case'observe':tone(510,.08,'sine',.03,140);break;case'dog':tone(230,.07,'square',.035,-30);setTimeout(()=>tone(180,.08,'square',.028,-25),70);break;case'throw':tone(420,.18,'triangle',.045,280);break;case'success':tone(440,.11,'sine',.045,120);setTimeout(()=>tone(660,.13,'sine',.045,180),120);setTimeout(()=>tone(880,.18,'sine',.04,60),260);break;case'fail':tone(250,.18,'sawtooth',.035,-100);break;case'attack':tone(115,.22,'sawtooth',.05,-60);break;case'run':tone(380,.09,'triangle',.025,-80);break;}}
+function haptic(pattern=25){try{navigator.vibrate?.(pattern)}catch(e){}}
+const A={
+  j:'../assets/justine.b64',g:'../assets/guillaume.b64',d:'../assets/syrachi.b64',
+  pj:'../assets/justine.b64',pg:'../assets/guillaume.b64',pd:'../assets/syrachi.b64',
+  sj:'assets/justine_sprite.webp',sg:'assets/guillaume_sprite.webp',sd:'assets/syrachi_sprite.webp',
+  e1:'../assets/battle_justine.b64',e2:'../assets/battle_guillaume.b64',e3:'../assets/explore.b64',e4:'../assets/battle_guillaume.b64',e5:'../assets/battle_justine.b64'
+};
+const imgs={};
+const sharks=[
+ {id:'reef',name:'Requin de récif',rare:'Commun',mood:'Curieux',base:.68,pow:5,spd:.75,c:'#78949c',zones:['lagoon','beach'],desc:'Petit requin côtier, nerveux mais accessible.'},
+ {id:'hammer',name:'Requin marteau',rare:'Peu commun',mood:'Méfiant',base:.56,pow:8,spd:1.0,c:'#74878c',zones:['lagoon','pontoon'],desc:'Silhouette inimitable et virages brusques.'},
+ {id:'tiger',name:'Requin tigre',rare:'Peu commun',mood:'Agressif',base:.46,pow:12,spd:.9,c:'#81745f',zones:['lagoon','beach'],desc:'Puissant et plus difficile à calmer.'},
+ {id:'mako',name:'Requin mako',rare:'Rare',mood:'Très rapide',base:.37,pow:11,spd:1.35,c:'#527b8e',zones:['deep','pontoon'],desc:'Une vraie flèche sous-marine.'},
+ {id:'white',name:'Grand requin blanc',rare:'Rare',mood:'Prédateur',base:.3,pow:15,spd:1,c:'#87999e',zones:['deep','pontoon'],desc:'Massif, menaçant, spectaculaire.'},
+ {id:'whale',name:'Requin-baleine',rare:'Très rare',mood:'Paisible',base:.52,pow:3,spd:.55,c:'#456c78',zones:['deep'],desc:'Un géant calme constellé de points.'},
+ {id:'meg',name:'Mégalodon',rare:'Légendaire',mood:'Boss',base:.11,pow:22,spd:.9,c:'#34474b',zones:['boss'],desc:'Présence titanesque venue des profondeurs.'}
+];
+let S={char:null,hp:100,balls:8,x:560,y:1180,caught:{},seen:{}};try{Object.assign(S,JSON.parse(localStorage.getItem(KEY))||{})}catch{}
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+const W={w:2600,h:1800,camX:0,camY:0,vw:innerWidth,vh:innerHeight,t:0,last:performance.now(),keys:{},touch:{},dir:'down',moving:false,dog:{x:S.x-58,y:S.y+38,dir:'down',moving:false},trail:[],battle:null,fin:null,nextFin:0};
+const lagoons=[
+ {id:'turq',type:'lagoon',name:'Lagon turquoise',x:420,y:410,w:560,h:340,pool:['reef','reef','hammer','tiger']},
+ {id:'north',type:'deep',name:'Lagon nord',x:1540,y:350,w:610,h:370,pool:['hammer','mako','white','whale']},
+ {id:'reeds',type:'lagoon',name:'Lagon des roseaux',x:810,y:1020,w:800,h:320,pool:['reef','tiger','hammer','white']},
+ {id:'pontoon',type:'pontoon',name:'Ponton abandonné',x:2040,y:690,w:370,h:250,pool:['hammer','mako','white']}
+];
+const camp={x:290,y:1270,w:340,h:235};
+const rocks=[{x:700,y:820,r:58},{x:1260,y:760,r:52},{x:1820,y:1010,r:70},{x:690,y:1390,r:50},{x:1450,y:510,r:42}];
+const portrait=n=>n==='Guillaume'?(imgs.pg?.src||''):(imgs.pj?.src||'');
+const heroSprite=()=>S.char==='Guillaume'?imgs.sg:imgs.sj;
+function fit(){const d=Math.min(devicePixelRatio||1,2);for(const c of [world,battleC]){c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';c.width=innerWidth*d;c.height=innerHeight*d;c.getContext('2d').setTransform(d,0,0,d,0,0)}W.vw=innerWidth;W.vh=innerHeight}addEventListener('resize',fit);fit();
+async function preload(){const load=async src=>{let final=src;if(src.endsWith('.b64')){const b64=(await fetch(src,{cache:'force-cache'}).then(r=>r.text())).trim();final='data:image/webp;base64,'+b64}return await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=final})};try{const chunks=await Promise.all(Array.from({length:7},(_,i)=>fetch(`sprite_chunks/chunk${String(i).padStart(2,'0')}.txt`,{cache:'force-cache'}).then(r=>r.text())));const parts=chunks.join('').split('~NEXT~');[imgs.sj,imgs.sg,imgs.sd]=await Promise.all(parts.map(b=>load('data:image/webp;base64,'+b)))}catch(e){console.warn('sprites',e)}for(const [k,v] of Object.entries(A)){if(['sj','sg','sd'].includes(k))continue;imgs[k]=await load(v).catch(()=>null)}$('#justineCardImg').src=imgs.j?.src||'';$('#guillaumeCardImg').src=imgs.g?.src||'';$('#syrachiCardImg').src=imgs.d?.src||'';$('#hudDog').src=imgs.pd?.src||'';setBg(S.char||'Justine');$('#loading').classList.add('hidden')}preload();
+function setBg(char){const src=char==='Guillaume'?(imgs.g?.src||''):(imgs.j?.src||'');document.querySelector('.start-bg').style.setProperty('--hero-bg',`url(${src})`)}
+const rr=(c,x,y,w,h,r,col)=>{c.fillStyle=col;c.beginPath();c.roundRect(x,y,w,h,r);c.fill()};
+function palm(c,x,y,s=1){c.save();c.translate(x,y);c.scale(s,s);c.strokeStyle='#61452e';c.lineWidth=9;c.beginPath();c.moveTo(0,36);c.quadraticCurveTo(3,-18,-5,-58);c.stroke();c.fillStyle='#3d7d47';for(let i=0;i<6;i++){c.save();c.rotate(i*Math.PI/3+Math.sin(W.t+x)*.035);c.beginPath();c.ellipse(21,-58,36,8,-.4,0,Math.PI*2);c.fill();c.restore()}c.restore()}
+function water(c,z){rr(c,z.x,z.y,z.w,z.h,88,'#45b3c3');c.strokeStyle='#dffcff66';c.lineWidth=2;for(let yy=z.y+28;yy<z.y+z.h;yy+=45){for(let xx=z.x+25+((Math.floor(yy/45)%2)*18);xx<z.x+z.w;xx+=84){c.beginPath();c.ellipse(xx+Math.sin(W.t*2+yy)*7,yy,27,6,0,0,Math.PI*2);c.stroke()}}}
+function spriteFrame(dir,moving){const step=(Math.floor(W.t*8)%2);if(dir==='down')return moving?(step?1:0):0;if(dir==='up')return moving?(step?3:2):2;if(dir==='left')return moving?(step?5:4):4;return moving?(step?7:6):6
