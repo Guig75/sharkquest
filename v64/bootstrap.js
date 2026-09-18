@@ -34,9 +34,27 @@
   const sheetDog = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="256" viewBox="0 0 512 256">${cell(0,0,dog(true,0))}${cell(1,0,dog(true,1))}${cell(2,0,dog(false,0))}${cell(3,0,dog(false,1))}${cell(0,1,dog(true,0))}${cell(1,1,dog(true,1))}${cell(2,1,dog(true,0,true))}${cell(3,1,dog(true,1,true))}</svg>`;
   window.__sqSprites={justine:svgURI(sheetHuman('j')),guillaume:svgURI(sheetHuman('g')),syrachi:svgURI(sheetDog)};
 
-  fetch('game.js',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('game.js');return r.text()}).then(code=>{
+  const loadB64=name=>fetch('../assets/'+name+'.b64',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(name);return r.text()});
+  const webp=s=>'data:image/webp;base64,'+s.trim();
+  Promise.all([
+    loadB64('justine'),
+    loadB64('guillaume'),
+    loadB64('syrachi'),
+    loadB64('battle_justine'),
+    loadB64('battle_guillaume'),
+    loadB64('explore'),
+    fetch('game.js',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('game.js');return r.text()})
+  ]).then(([j,g,d,bj,bg,wide,code])=>{
+    window.__sqVisuals={justine:webp(j),guillaume:webp(g),syrachi:webp(d),battleJustine:webp(bj),battleGuillaume:webp(bg),wide:webp(wide)};
     code=code.replace(/const parts=await Promise\.all\(\[0,1,2,3,4\][\s\S]*?\[IMG\.justineSprite,IMG\.guillaumeSprite,IMG\.syrachiSprite\]=await Promise\.all\(\[spriteFromB64\(jb\),spriteFromB64\(gb\),spriteFromB64\(db\)\]\);/,"[IMG.justineSprite,IMG.guillaumeSprite,IMG.syrachiSprite]=await Promise.all([preload(window.__sqSprites.justine),preload(window.__sqSprites.guillaume),preload(window.__sqSprites.syrachi)]);");
-    code=code.replace('b.dogUsed?.04:0','b.dogUsed?0.04:0');
+    code=code
+      .replace("j:'../v52/assets/justine.webp'","j:window.__sqVisuals.justine")
+      .replace("g:'../v52/assets/guillaume.webp'","g:window.__sqVisuals.guillaume")
+      .replace("d:'../v52/assets/syrachi.webp'","d:window.__sqVisuals.syrachi")
+      .replace("bj:'../v52/assets/battle_justine.webp'","bj:window.__sqVisuals.battleJustine")
+      .replace("bg:'../v52/assets/battle_guillaume.webp'","bg:window.__sqVisuals.battleGuillaume")
+      .replace("wide:'../v52/battle.webp'","wide:window.__sqVisuals.wide")
+      .replace('b.dogUsed?.04:0','b.dogUsed?0.04:0');
     (0,eval)(code);
   }).catch(e=>{console.error(e);const l=document.getElementById('loading');if(l)l.textContent='Erreur de chargement — recharge la page.'});
 })();
