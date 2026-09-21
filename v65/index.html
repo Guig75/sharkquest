@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#06171d">
+<title>SharkQuest V6.5</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="loading">Chargement de SharkQuest V6.5…</div>
+
+<section id="start" class="screen start-screen">
+  <div class="start-shade"></div>
+  <div class="start-content">
+    <div class="logo-row"><div class="logo">SHARK<span>QUEST</span></div><div class="version">V6.5</div></div>
+    <div class="tagline">EXPLORE • OBSERVE • CAPTURE • DÉCOUVRE</div>
+    <h1>Choisis ton explorateur</h1>
+    <div class="cards">
+      <button class="char-card" data-char="Justine"><div class="atlas-card justine"></div><div class="card-grad"></div><div class="card-copy"><b>Justine</b><span>Exploration • observation</span></div></button>
+      <button class="char-card" data-char="Guillaume"><div class="atlas-card guillaume"></div><div class="card-grad"></div><div class="card-copy"><b>Guillaume</b><span>Survie • sang-froid</span></div></button>
+      <div class="dog-card"><div class="atlas-card syrachi"></div><div class="card-grad"></div><div class="card-copy"><b>Syrachi</b><span>Toujours à vos côtés</span></div></div>
+    </div>
+    <div class="start-actions"><button id="playBtn" class="primary" disabled>Choisis un personnage</button><button id="resumeBtn" class="secondary hidden">Continuer</button></div>
+  </div>
+</section>
+
+<section id="game" class="screen hidden">
+  <canvas id="world"></canvas>
+  <div class="hud-left glass"><div id="hudPortrait" class="portrait justine"></div><div class="portrait syrachi small"></div><div class="meta"><strong id="hudName">Justine</strong><div class="row"><div class="bar"><i id="hpBar"></i></div><span>❤️ <b id="hp">100</b></span></div></div></div>
+  <div class="mission glass"><small>OBJECTIF</small><b id="quest">Découvrir 3 espèces de requins.</b></div>
+  <div class="hud-right glass"><span>🔴 <b id="balls">8</b></span><span>🦈 <b id="count">0</b>/7</span><button id="dexBtn">SharkDex</button></div>
+  <div id="zoneLabel" class="zone-label">CAMP DE BASE</div>
+  <div id="toast" class="toast"></div>
+  <div class="dpad"><button data-dir="up">▲</button><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div>
+</section>
+
+<section id="battle" class="screen hidden battle-screen">
+  <div id="battleBg" class="battle-bg justine"></div>
+  <canvas id="battleCanvas"></canvas>
+  <div class="vignette"></div>
+  <div class="enemy glass"><small id="enemyRarity">COMMUN</small><strong id="enemyName">Requin de récif</strong><span id="enemyMood">Curieux</span><div class="row"><div class="bar enemybar"><i id="enemyBar"></i></div><span><b id="enemyPct">100</b>%</span></div></div>
+  <div class="player-panel glass"><div id="battlePortrait" class="portrait justine"></div><div class="portrait syrachi small"></div><div class="meta"><strong id="battleName">Justine + Syrachi</strong><span id="battleStats">❤️ 100 • 🔴 8</span></div></div>
+  <div id="battleText" class="battle-text glass">Un requin apparaît !</div>
+  <div class="battle-actions">
+    <button id="observeBtn"><span>👀</span><b>Observer</b><small>Étudier ses mouvements</small></button>
+    <button id="captureBtn" class="capture"><span>🔴</span><b>Pokéball</b><small>Tenter la capture</small></button>
+    <button id="dogBtn"><span>🐕</span><b>Syrachi</b><small>Créer une ouverture</small></button>
+    <button id="runBtn"><span>🏃</span><b>Reculer</b><small>Quitter la rencontre</small></button>
+  </div>
+  <div id="ballFx" class="ball-fx">🔴</div><div id="flashFx" class="flash-fx"></div>
+</section>
+
+<section id="dex" class="modal hidden"><div class="dex-panel glass"><div class="dex-head"><div><small>SHARKDEX</small><h2>Espèces de l'île</h2></div><button id="closeDex">✕</button></div><div id="dexGrid" class="dex-grid"></div><div class="dex-detail"><div id="dexIcon" class="dex-icon">🦈</div><div><h3 id="dexName">Sélectionne une espèce</h3><p id="dexInfo">Explore les lagons et les côtes.</p></div></div></div></section>
+
+<script src="game.js"></script>
+</body>
+</html>
